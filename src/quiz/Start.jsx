@@ -9,9 +9,12 @@ const Start = () => {
   //Take 10 random questions array
   let questionsArray = shuffled.slice(0, 10);
 
-  const { questions, setQuestions } = useContext(QuizContext);
-  const { gameState, setGameState } = useContext(QuizContext);
+  const { setQuestions } = useContext(QuizContext);
+  const { setGameState } = useContext(QuizContext);
+
+  //Display number of questions
   const questionsLength = questionsArray.length;
+  
   useEffect(() => {
     setQuestions(questionsArray);
   }, []);

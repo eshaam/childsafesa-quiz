@@ -5,49 +5,46 @@ import ProgressBar from 'react-bootstrap/ProgressBar';
 
 const Question = () => {
   
-  const { questions, setQuestions } = useContext(QuizContext);
-  const { gameState, setGameState } = useContext(QuizContext);
+  const { questions } = useContext(QuizContext);
+  const { setGameState } = useContext(QuizContext);
   const { counter, setCounter } = useContext(QuizContext);
   const { score, setScore } = useContext(QuizContext);
 
   const [currQuestion, setCurrQuestion] = useState(0);
   const [optionChosen, setOptionChosen] = useState("");
   const [questionCounter, setQuestionCounter] = useState(1);
-  
-  
+
+  const answerButtons = ['btn-a', 'btn-b', 'btn-c', 'btn-d'];
+  const correctAnswerClass = 'btn-outline-success';
+  const incorrectAnswerClass = 'btn-outline-danger';
+  const maxNumOfQuestions = 10;
 
   const SelectAnswer = (option) => {
     setOptionChosen(option);
-    console.log(option);
-    //get the current question
+    
     if(questions[currQuestion].answer === option){
+      //If user has selected the correct answer inscrement score and outline
       setScore(score + 1);
-      document.getElementById('btn-' + option).classList.add("btn-outline-success")
+      document.getElementById('btn-' + option).classList.add(correctAnswerClass)
     }else {
-      document.getElementById('btn-' + option).classList.add("btn-outline-danger")
-      document.getElementById('btn-' + questions[currQuestion].answer).classList.add("btn-outline-success")
- 
+      //Otherwise outline it was the wrong answer and outline the correct one
+      document.getElementById('btn-' + option).classList.add(incorrectAnswerClass)
+      document.getElementById('btn-' + questions[currQuestion].answer).classList.add(correctAnswerClass)
     }
-
   }
 
   const nextQuestion = () => {
     setOptionChosen("");
-    document.getElementById('btn-a').classList.remove("btn-outline-danger")
-    document.getElementById('btn-b').classList.remove("btn-outline-danger")
-    document.getElementById('btn-c').classList.remove("btn-outline-danger")
-    document.getElementById('btn-d').classList.remove("btn-outline-danger")
-    document.getElementById('btn-a').classList.remove("btn-outline-success")
-    document.getElementById('btn-b').classList.remove("btn-outline-success")
-    document.getElementById('btn-c').classList.remove("btn-outline-success")
-    document.getElementById('btn-d').classList.remove("btn-outline-success")
-    // document.getElementById('btn-a').classList.remove("btn-outline-secondary")
-    // document.getElementById('btn-b').classList.remove("btn-outline-secondary")
-    // document.getElementById('btn-c').classList.remove("btn-outline-secondary")
-    // document.getElementById('btn-d').classList.remove("btn-outline-secondary")
+
+    answerButtons.forEach((btn)=>{
+      //before moving to next question clear the styling to default
+      document.getElementById(btn).classList.remove(incorrectAnswerClass)
+      document.getElementById(btn).classList.remove(correctAnswerClass)
+    })
+ 
     setCurrQuestion(currQuestion + 1);
     setQuestionCounter(questionCounter + 1);
-    if(currQuestion === 9) {
+    if(currQuestion === maxNumOfQuestions - 1) {
       setGameState("end");
     }
   }
@@ -58,6 +55,8 @@ const Question = () => {
     } else {
       document.getElementById('nextBtn').removeAttribute("disabled", "disabled");
     }
+
+    //Decrease the counter from 100 every 1 sec until 0 so 100 seconds to complete quiz
     const timer = counter > 0 && setInterval(() => setCounter(counter - 1), 1000);
 
     if (counter === 0) {
@@ -118,7 +117,7 @@ const Question = () => {
       <div className="col-sm-12 d-grid gap-2 my-4">
         
           {/* Change next button text when we reach last question */}
-          <button id="nextBtn" onClick={() => { nextQuestion(); }} className="startBtn py-3"> {questionCounter < 10 ? 'Next question' : 'End quiz'}</button>
+          <button id="nextBtn" onClick={() => { nextQuestion(); }} className="startBtn py-3"> {questionCounter < maxNumOfQuestions ? 'Next question' : 'End quiz'}</button>
       </div>
     </div>
    
